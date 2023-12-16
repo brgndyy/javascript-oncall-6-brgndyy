@@ -29,6 +29,12 @@ class App {
   async #readEmergencyWorker() {
     this.#weekDayEmergencyWorkers = await InputView.readWeekDayEmergencyWorker();
     EmergencyWokersValidator.validateWokers(this.#weekDayEmergencyWorkers);
+
+    this.#weekendEmergencyWorkers = await InputView.readWeekendEmergencyWorker();
+    EmergencyWokersValidator.validateWeekendWorkers(
+      this.#weekDayEmergencyWorkers,
+      this.#weekendEmergencyWorkers,
+    );
   }
 }
 

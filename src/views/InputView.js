@@ -16,6 +16,14 @@ const InputView = {
 
     return weekDayEmergencyWorkers.split(DELIMITER.comma).map((person) => person.trim());
   },
+
+  async readWeekendEmergencyWorker() {
+    const weekendEmergencyWorkers = await Console.readLineAsync(
+      PROGRESS_MESSAGE.read_weekend_emergency_worker,
+    );
+
+    return weekendEmergencyWorkers.split(DELIMITER.comma).map((person) => person.trim());
+  },
 };
 
 export default InputView;
