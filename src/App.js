@@ -3,6 +3,8 @@ import InputView from './views/InputView.js';
 import MonthValidator from './validators/MonthValidator.js';
 import DayValidator from './validators/DayValidator.js';
 import EmergencyWokersValidator from './validators/EmergencyWorkersValidator.js';
+import WorkShiftMachine from './domains/WorkShiftMachine.js';
+import OutputView from './views/OuputView.js';
 
 class App {
   #standardMonth;
@@ -16,13 +18,14 @@ class App {
   async run() {
     await asyncFunctionHandlerWithError(this.#readMonthAndStartDay, this);
     await asyncFunctionHandlerWithError(this.#readEmergencyWorker, this);
+    this.#printTotalWorkShift();
   }
 
   async #readMonthAndStartDay() {
     const [month, startDay] = await InputView.readMonthAndStartDay();
     MonthValidator.validateMonth(month);
     DayValidator.validateDay(startDay);
-    this.#standardMonth = month;
+    this.#standardMonth = Number(month);
     this.#startDay = startDay;
   }
 
@@ -35,6 +38,19 @@ class App {
       this.#weekDayEmergencyWorkers,
       this.#weekendEmergencyWorkers,
     );
+  }
+
+  #printTotalWorkShift() {
+    const workShiftMachine = new WorkShiftMachine(
+      this.#standardMonth,
+      this.#startDay,
+      this.#weekDayEmergencyWorkers,
+      this.#weekendEmergencyWorkers,
+    );
+
+    const totalResult = workShiftMachine.generateTotalWorkShift();
+
+    OutputView.printTotalWorkShift(totalResult);
   }
 }
 
