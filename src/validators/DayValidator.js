@@ -5,7 +5,7 @@ import ERROR_MESSAGES from '../constants/messages/errorMessage.js';
 class DayValidator {
   static validateDay(day) {
     if (!CONDITION.all_day.includes(day)) {
-      throw new AppError(ERROR_MESSAGES.invalid_month_and_day);
+      throw new AppError(ERROR_MESSAGES.invalid_value);
     }
   }
 }
