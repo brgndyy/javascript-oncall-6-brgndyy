@@ -1,6 +1,6 @@
-import { converStringDayToNum } from '../utils/convertDay.js';
 import ALL_DATE from '../database/allDate.js';
 import createCustomCalendar from '../service/createCustomCalendar.js';
+import CONDITION from '../constants/conditions/condition.js';
 
 class WorkShiftMachine {
   #standardMonth;
@@ -24,7 +24,6 @@ class WorkShiftMachine {
     this.#startDayOfString = startDay; // 금
     this.#weekDayEmergencyWorkers = weekDayEmergencyWorkers;
     this.#weekendEmergencyWorkers = weekendEmergencyWorkers;
-    this.#startDayOfNumber = converStringDayToNum(this.#startDayOfString); // 5
     this.#totalDaysInMonth = ALL_DATE.find((month) => month.month === this.#standardMonth).maxDay;
     this.#targetCalendar = createCustomCalendar(this.#standardMonth, this.#startDayOfString);
     this.#totalWorkShiftHistory = [];
@@ -44,26 +43,26 @@ class WorkShiftMachine {
 
       const worker = workerGroup[workerIndex];
 
-      if (this.isSameWorkerOnConsecutiveShift(lastWorker, worker, isWeekend)) {
-        this.swapWorkers(workerGroup, workerIndex);
+      if (this.#isSameWorkerOnConsecutiveShift(lastWorker, worker, isWeekend)) {
+        this.#swapWorkers(workerGroup, workerIndex);
         i = -1;
         continue;
       }
 
-      this.#totalWorkShiftHistory.push(this.createShiftEntry(dayInfo, worker, isWeekend));
+      this.#totalWorkShiftHistory.push(this.#createShiftEntry(dayInfo, worker, isWeekend));
 
       lastWorker = { name: worker, isWeekend };
-      currentWorkerIndex = this.updateWorkerIndex(currentWorkerIndex, isWeekend);
+      currentWorkerIndex = this.#updateWorkerIndex(currentWorkerIndex, isWeekend);
     }
 
     return this.#totalWorkShiftHistory;
   }
 
-  isSameWorkerOnConsecutiveShift(lastWorker, currentWorker, isWeekend) {
+  #isSameWorkerOnConsecutiveShift(lastWorker, currentWorker, isWeekend) {
     return lastWorker.name === currentWorker && lastWorker.isWeekend !== isWeekend;
   }
 
-  createShiftEntry(dayInfo, worker, isWeekend) {
+  #createShiftEntry(dayInfo, worker, isWeekend) {
     return {
       month: this.#standardMonth,
       date: dayInfo.date,
@@ -74,7 +73,7 @@ class WorkShiftMachine {
     };
   }
 
-  updateWorkerIndex(currentIndex, isWeekend) {
+  #updateWorkerIndex(currentIndex, isWeekend) {
     if (isWeekend) {
       return {
         ...currentIndex,
@@ -87,9 +86,14 @@ class WorkShiftMachine {
     };
   }
 
-  swapWorkers(workers, index) {
+  #swapWorkers(isWeekend) {
+    const workers = isWeekend ? this.#weekendEmergencyWorkers : this.#weekDayEmergencyWorkers;
+    const index = this.currentWorkerIndex[isWeekend ? CONDITION.weekend : CONDITION.weekday];
     const nextIndex = (index + 1) % workers.length;
-    [workers[index], workers[nextIndex]] = [workers[nextIndex], workers[index]];
+
+    const temp = workers[index];
+    workers[index] = workers[nextIndex];
+    workers[nextIndex] = temp;
   }
 }
 

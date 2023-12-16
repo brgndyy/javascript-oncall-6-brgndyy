@@ -9,6 +9,8 @@ const CONDITION = deepFreeze({
   max_workers_length: 35,
   min_worker_name_length: 1,
   max_worker_name_length: 5,
+  weekend: 'weekend',
+  weekday: 'weekday',
 });
 
 export default CONDITION;
