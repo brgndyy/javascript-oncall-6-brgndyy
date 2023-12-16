@@ -1,15 +1,18 @@
 import { Console } from '@woowacourse/mission-utils';
 import DELIMITER from '../constants/delimiters/delimiter.js';
 import isSpecialHoliday from '../utils/isSpecialHoliday.js';
+import PROGRESS_MESSAGE from '../constants/messages/progressMessage.js';
 
 const OutputView = {
   printTotalWorkShift(totalWorkShift) {
     totalWorkShift.forEach((workShift) => {
       let dayString = workShift.dayToString;
       if (isSpecialHoliday(workShift.month, workShift.date)) {
-        dayString += ' (휴일)';
+        dayString += PROGRESS_MESSAGE.holiday;
       }
-      Console.print(`${workShift.month}월 ${workShift.date}일 ${dayString} ${workShift.name}`);
+      Console.print(
+        PROGRESS_MESSAGE.result(workShift.month, workShift.date, dayString, workShift.name),
+      );
     });
   },
 
