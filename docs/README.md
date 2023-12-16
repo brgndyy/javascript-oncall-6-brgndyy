@@ -229,7 +229,7 @@ npx jest --coverage
 -----------------------------------|---------|----------|---------|---------|-------------------
 File                               | % Stmts | % Branch | % Funcs | % Lines | Uncovered Line #s
 -----------------------------------|---------|----------|---------|---------|-------------------
-All files                          |   87.31 |       70 |   97.05 |    86.4 |
+All files                          |   89.55 |       76 |   97.05 |    88.8 |
  src                               |     100 |      100 |     100 |     100 |
   App.js                           |     100 |      100 |     100 |     100 |
  src/constants/conditions          |     100 |      100 |     100 |     100 |
@@ -252,18 +252,19 @@ All files                          |   87.31 |       70 |   97.05 |    86.4 |
   asyncFunctionHandlerWithError.js |     100 |      100 |     100 |     100 |
   deepFreeze.js                    |     100 |      100 |     100 |     100 |
   isSpecialHoliday.js              |     100 |       50 |     100 |     100 | 4
- src/validators                    |      75 |    72.72 |     100 |      75 |
+ src/validators                    |    87.5 |    86.36 |     100 |    87.5 |
   DayValidator.js                  |      50 |       50 |     100 |      50 | 8
-  EmergencyWorkersValidator.js     |      75 |    64.28 |     100 |      75 | 18,28,32,39,58
+  EmergencyWorkersValidator.js     |      90 |    85.71 |     100 |      90 | 32,58
   MonthValidator.js                |     100 |      100 |     100 |     100 |
  src/views                         |   88.88 |       50 |      90 |   86.66 |
   InputView.js                     |     100 |      100 |     100 |     100 |
   OuputView.js                     |      75 |       50 |      75 |      75 | 11,24
 -----------------------------------|---------|----------|---------|---------|-------------------
-Test Suites: 1 passed, 1 total
-Tests:       2 passed, 2 total
+
+Test Suites: 2 passed, 2 total
+Tests:       8 passed, 8 total
 Snapshots:   0 total
-Time:        1.453 s
+Time:        1.192 s, estimated 2 s
 ```
 
 </details>
