@@ -9,7 +9,7 @@ class MonthValidator {
       Number(month) < CONDITION.start_month ||
       Number(month) > CONDITION.end_month
     ) {
-      throw new AppError(ERROR_MESSAGES.invalid_month_and_day);
+      throw new AppError(ERROR_MESSAGES.invalid_value);
     }
   }
 }
