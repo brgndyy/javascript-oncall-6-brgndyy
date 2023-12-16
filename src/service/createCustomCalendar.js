@@ -17,8 +17,7 @@ const createDayEntry = (month, day, dayToNumber) => ({
 });
 
 const createCustomCalendar = (month, startDayString) => {
-  const monthDays = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
-  const daysInMonth = monthDays[month - 1];
+  const daysInMonth = CONDITION.all_month_days[month - 1];
   let dayToNumber = CONDITION.all_day.indexOf(startDayString);
 
   const calendar = [];
