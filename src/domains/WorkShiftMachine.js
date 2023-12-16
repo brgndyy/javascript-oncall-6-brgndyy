@@ -31,66 +31,60 @@ class WorkShiftMachine {
   }
 
   generateTotalWorkShift() {
-    let currentWeekDayIndex = 0;
-    let currentWeekendIndex = 0;
-    let lastWorker = null;
-    let lastIsWeekendOrHoliday = false;
-
     this.#totalWorkShiftHistory = [];
+    let currentWorkerIndex = { weekday: 0, weekend: 0 };
+    let lastWorker = { name: null, isWeekend: null };
 
-    let i = 0;
-    while (i < this.#targetCalendar.length) {
-      const targetMonth = this.#targetCalendar[i];
-      const isWeekendOrHoliday = targetMonth.isHoliday;
-      let worker;
+    for (let i = 0; i < this.#totalDaysInMonth; i++) {
+      const dayInfo = this.#targetCalendar[i];
+      const isWeekend = dayInfo.isHoliday;
 
-      if (isWeekendOrHoliday) {
-        worker = this.#weekendEmergencyWorkers[currentWeekendIndex];
-        if (lastIsWeekendOrHoliday === false && lastWorker === worker) {
-          this.swapWorkers(this.#weekendEmergencyWorkers, currentWeekendIndex);
-          // Reset and restart the loop
-          i = 0;
-          currentWeekDayIndex = 0;
-          currentWeekendIndex = 0;
-          lastWorker = null;
-          lastIsWeekendOrHoliday = false;
-          this.#totalWorkShiftHistory = [];
-          continue;
-        }
-        lastWorker = worker;
-        lastIsWeekendOrHoliday = true;
-        currentWeekendIndex = (currentWeekendIndex + 1) % this.#weekendEmergencyWorkers.length;
-      } else {
-        worker = this.#weekDayEmergencyWorkers[currentWeekDayIndex];
-        if (lastIsWeekendOrHoliday === true && lastWorker === worker) {
-          this.swapWorkers(this.#weekDayEmergencyWorkers, currentWeekDayIndex);
-          // Reset and restart the loop
-          i = 0;
-          currentWeekDayIndex = 0;
-          currentWeekendIndex = 0;
-          lastWorker = null;
-          lastIsWeekendOrHoliday = false;
-          this.#totalWorkShiftHistory = [];
-          continue;
-        }
-        lastWorker = worker;
-        lastIsWeekendOrHoliday = false;
-        currentWeekDayIndex = (currentWeekDayIndex + 1) % this.#weekDayEmergencyWorkers.length;
+      const workerGroup = isWeekend ? this.#weekendEmergencyWorkers : this.#weekDayEmergencyWorkers;
+      const workerIndex = isWeekend ? currentWorkerIndex.weekend : currentWorkerIndex.weekday;
+
+      const worker = workerGroup[workerIndex];
+
+      if (this.isSameWorkerOnConsecutiveShift(lastWorker, worker, isWeekend)) {
+        this.swapWorkers(workerGroup, workerIndex);
+        i = -1;
+        continue;
       }
 
-      this.#totalWorkShiftHistory.push({
-        month: this.#standardMonth,
-        date: targetMonth.date,
-        dayToNumber: targetMonth.dayToNumber,
-        dayToString: targetMonth.dayToString,
-        name: worker,
-        isHoliday: isWeekendOrHoliday,
-      });
+      this.#totalWorkShiftHistory.push(this.createShiftEntry(dayInfo, worker, isWeekend));
 
-      i++;
+      lastWorker = { name: worker, isWeekend };
+      currentWorkerIndex = this.updateWorkerIndex(currentWorkerIndex, isWeekend);
     }
 
     return this.#totalWorkShiftHistory;
+  }
+
+  isSameWorkerOnConsecutiveShift(lastWorker, currentWorker, isWeekend) {
+    return lastWorker.name === currentWorker && lastWorker.isWeekend !== isWeekend;
+  }
+
+  createShiftEntry(dayInfo, worker, isWeekend) {
+    return {
+      month: this.#standardMonth,
+      date: dayInfo.date,
+      dayToNumber: dayInfo.dayToNumber,
+      dayToString: dayInfo.dayToString,
+      name: worker,
+      isHoliday: isWeekend,
+    };
+  }
+
+  updateWorkerIndex(currentIndex, isWeekend) {
+    if (isWeekend) {
+      return {
+        ...currentIndex,
+        weekend: (currentIndex.weekend + 1) % this.#weekendEmergencyWorkers.length,
+      };
+    }
+    return {
+      ...currentIndex,
+      weekday: (currentIndex.weekday + 1) % this.#weekDayEmergencyWorkers.length,
+    };
   }
 
   swapWorkers(workers, index) {
