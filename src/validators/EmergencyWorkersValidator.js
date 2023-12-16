@@ -39,6 +39,25 @@ class EmergencyWokersValidator {
       throw new AppError(ERROR_MESSAGES.invalid_value);
     }
   }
+
+  static validateWeekendWorkers(weekdayWorkers, weekendWorkers) {
+    EmergencyWokersValidator.validateTotalLength(weekendWorkers);
+    EmergencyWokersValidator.validateIndividualWorkerNameLength(weekendWorkers);
+    EmergencyWokersValidator.validateDuplication(weekendWorkers);
+    EmergencyWokersValidator.validateComparedWeekdayAndWeekendWorkers(
+      weekdayWorkers,
+      weekendWorkers,
+    );
+  }
+
+  static validateComparedWeekdayAndWeekendWorkers(weekdayWorkers, weekendWorkers) {
+    const sortedWeekdayWorkers = [...weekdayWorkers].sort();
+    const sortedWeekendWorkers = [...weekendWorkers].sort();
+
+    if (sortedWeekdayWorkers.join(DELIMITER.comma) !== sortedWeekendWorkers.join(DELIMITER.comma)) {
+      throw new AppError(ERROR_MESSAGES.invalid_value);
+    }
+  }
 }
 
 export default EmergencyWokersValidator;
